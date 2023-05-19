@@ -72,15 +72,27 @@ for insumo in lista_insumos:
 """ 
 4. Buscar insumo por característica: El usuario ingresa una característica (por ejemplo, "Sin Granos") y se listarán todos los insumos que poseen dicha característica.
 """
-insumos_caracteristica = []
-carateristica_buscar = input("Ingrese caracteristica a buscar\n").capitalize()
+# insumos_caracteristica = []
+# carateristica_buscar = input("Ingrese caracteristica a buscar\n").capitalize()
 
-for insumo in lista_insumos:
-    if carateristica_buscar in insumo["CARACTERISTICAS"]: 
-        insumos_caracteristica.append(insumo)
+# for insumo in lista_insumos:
+#     if carateristica_buscar in insumo["CARACTERISTICAS"]: 
+#         insumos_caracteristica.append(insumo)
 
 # mostrar_insumos(insumos_caracteristica)
 
 """ 
 5. Listar insumos ordenados: Muestra el ID, descripción, precio, marca y la primera característica de todos los productos, ordenados por marca de forma ascendente (A-Z) y, ante marcas iguales, por precio descendente.
 """
+
+creciente = True
+tam = len(lista_insumos)
+
+for i in range(tam-1):
+    for j in range(i+1, tam):
+        if (lista_insumos[i]["MARCA"] > lista_insumos[j]["MARCA"]) or (lista_insumos[i]["MARCA"] == lista_insumos[j]["MARCA"] and lista_insumos[i]["PRECIO"] < lista_insumos[j]["PRECIO"]):
+            aux = lista_insumos[i]
+            lista_insumos[i] = lista_insumos[j]
+            lista_insumos[j] = aux
+
+mostrar_insumos(lista_insumos)
