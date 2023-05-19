@@ -1,4 +1,5 @@
 from menu import *
+import re
 
 with open("insumos.csv","r", encoding='utf-8') as file:
     
@@ -34,7 +35,7 @@ def mostrar_insumos(lista:list):
         mostrar_insumo(insumo)
 
 
-mostrar_insumos(lista_insumos)
+# mostrar_insumos(lista_insumos)
 
 """ 
 2. Listar cantidad por marca: Muestra todas las marcas y la cantidad de insumos correspondientes a cada una.
@@ -68,3 +69,18 @@ for insumo in lista_insumos:
 # for elemento in lista_precios_nombre:
 #     print(elemento)
         
+""" 
+4. Buscar insumo por característica: El usuario ingresa una característica (por ejemplo, "Sin Granos") y se listarán todos los insumos que poseen dicha característica.
+"""
+insumos_caracteristica = []
+carateristica_buscar = input("Ingrese caracteristica a buscar\n").capitalize()
+
+for insumo in lista_insumos:
+    if carateristica_buscar in insumo["CARACTERISTICAS"]: 
+        insumos_caracteristica.append(insumo)
+
+# mostrar_insumos(insumos_caracteristica)
+
+""" 
+5. Listar insumos ordenados: Muestra el ID, descripción, precio, marca y la primera característica de todos los productos, ordenados por marca de forma ascendente (A-Z) y, ante marcas iguales, por precio descendente.
+"""
