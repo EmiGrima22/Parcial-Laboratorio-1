@@ -1,4 +1,4 @@
-from re import *
+import re
 
 def validar_entero(string_num:str)->bool:
     """Valida que el string ingresado tenga solo numeros
@@ -9,9 +9,9 @@ def validar_entero(string_num:str)->bool:
     Returns:
         bool: True si tiene unicamente digitos y False en caso contrario
     """
-    patron = compile("^[0-9]+$")
+    patron = re.compile("^[0-9]+$")
     
-    if match(patron,string_num):
+    if re.match(patron,string_num):
         return True
     else:
         return False
