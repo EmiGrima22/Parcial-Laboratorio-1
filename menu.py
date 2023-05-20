@@ -75,7 +75,7 @@ def insumos_app() -> None:
                                 while True:
                                     cantidad = int(input("\n¿Cuantos queres?\n"))
                                     if cantidad > 0:
-                                        subtotal = cantidad * producto_precio
+                                        subtotal = calcular_subtotal(producto_precio, cantidad)
                                         break
                             except ValueError:
                                 print("Error! No ingresaste un entero")

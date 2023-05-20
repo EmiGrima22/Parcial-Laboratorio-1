@@ -169,6 +169,6 @@ def buscar_producto_esta(lista:list, key:str, producto_buscado:str) -> bool:
                 
     return flag_esta 
 
-def calcular_subtotal():
-    subtotal  = lambda operando_a, operando_b: operando_a * operando_b
+def calcular_subtotal(operando_a:int | float, operando_b:int | float)-> int | float:
+    subtotal  =  operando_a * operando_b
     return subtotal
