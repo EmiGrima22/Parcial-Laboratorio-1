@@ -27,3 +27,6 @@ def leer_archivo(nombre_archivo:str)->list:
     else:
         return -1
 
+def escribir_archivo(nombre_archivo:str, datos:list):
+    with open(nombre_archivo,"w") as archivo:
+        archivo.writelines("\n".join(datos))

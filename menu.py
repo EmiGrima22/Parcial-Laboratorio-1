@@ -1,7 +1,8 @@
 import os
+import json
 from validaciones import *
 from funciones_insumos import *
-from functools import reduce
+
 
 def imprimir_menu_insumos()->None:
     """Imprime el menu de opciones
@@ -45,66 +46,30 @@ def insumos_app() -> None:
                 listar_insumos_por_marca(lista_insumos)
             case 4:
                 caracteristica_buscar = input("Ingrese caracteristica a buscar\n").capitalize()
-                buscar_insumo_por_característica(lista_insumos, caracteristica_buscar)
+                if not validar_string_vacio(caracteristica_buscar) and len(caracteristica_buscar) > 0:
+                    buscar_insumo_por_característica(lista_insumos, caracteristica_buscar)
+                else:
+                    print("No debe ser una cadena vacia")
             case 5:
                 listar_insumos_ordenados(lista_insumos)
             case 6:
-                reemplazar_caracter(lista_insumos,"precio","$","")
-                convertir_str_flotante(lista_insumos, "precio")
-                total_compra = []
-                registro_compra = []
-
-                while True:
-                    marca_buscar = input("Ingrese marca a buscar\n")
-                    marcas_disponibles = list(filter(lambda ins:ins["marca"] == marca_buscar,lista_insumos))
-
-                    if len(marcas_disponibles) > 0:
-                        while True:
-                            while True:
-                                mostrar_insumos(marcas_disponibles)
-                                producto = input("\n¿Ingrese el ID del producto que desee?\n")
-
-                                if buscar_producto_esta(marcas_disponibles, "id", producto):
-                                    producto_nombre = marcas_disponibles["nombre"]
-                                    producto_precio = marcas_disponibles["precio"]
-                                    break
-                                else:
-                                    print("El producto no se encontro")
-
-                            try:
-                                while True:
-                                    cantidad = int(input("\n¿Cuantos queres?\n"))
-                                    if cantidad > 0:
-                                        subtotal = calcular_subtotal(producto_precio, cantidad)
-                                        break
-                            except ValueError:
-                                print("Error! No ingresaste un entero")
-                            
-                            total_compra.append(subtotal)
-                            registro_compra.append(f"Cantidad: {cantidad} - Producto: {producto_nombre} - Subtotal:    ${subtotal}")
-                            while True:
-                                continuar = input("¿Quiere continuar comprando? s/n\n").lower()
-                                if continuar == "s" or continuar == "n": 
-                                    break
-
-                            if continuar == "s" or continuar == "n":
-                                break
-
-                        if continuar == "n":
-                                break
-                    else:
-                        print("No existe ese producto")
-                total_final = reduce(lambda act, ant: ant + act, total_compra)
-                registro_compra.append(f"                                             - Total: ${total_final}")
-
-                print(f"El total de la compra fue {total_final}")
-                
-                with open("Factura_compra.txt","w") as archivo:
-                    archivo.writelines("\n".join(registro_compra))
+                realizar_compras(lista_insumos)  
             case 7:
-                pass
+                
+                productos_filtrados = []
+                
+                insumos_filtrados_alimento = list(filter(lambda ins: "Alimento" in ins["nombre"],lista_insumos))
+
+                # for insumo in lista_insumos:
+                #     if "Alimento" in insumo["nombre"]:
+                #         productos_filtrados.append(insumo)
+
+                with open("insumos_alimento.json", "w", encoding='utf-8') as archivo:
+                    json.dump(insumos_filtrados_alimento, archivo, indent=4, separators=(", ", " : "), ensure_ascii=False)
+
             case 8:
-                pass
+                with open("insumos_alimento.json", "w") as archivo:
+                    pass
             case 9:
                 pass
             case 10:

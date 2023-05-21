@@ -15,3 +15,19 @@ def validar_entero(string_num:str)->bool:
         return True
     else:
         return False
+
+def validar_string_espacios(string:str)-> bool:
+    patron = re.compile("^[A-Za-z ]+$")
+
+    if re.match(patron,string):
+        return True
+    else:
+        return False
+
+def validar_string_vacio(string:str)-> bool:
+    patron = re.compile("^[ ]+$")
+    
+    if re.match(patron,string):
+        return True
+    else:
+        return False

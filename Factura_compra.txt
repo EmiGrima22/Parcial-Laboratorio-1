@@ -1,5 +1,3 @@
-Cantidad: 1 - Producto: Alimento para perros - Subtotal: 19.5
-Cantidad: 1 - Producto: Cepillo para perros - Subtotal: 17.99
-Cantidad: 1 - Producto: Alimento para gatos - Subtotal: 9.99
-Cantidad: 1 - Producto: Alimento para peces - Subtotal: 5.99
-                                             - Total: 53.47
+Cantidad: 1 - Producto: Alimento para peces                 - Subtotal: $5.99
+Cantidad: 1 - Producto: Arena para gatos                    - Subtotal: $14.99
+                                                            - Total:    $20.98
