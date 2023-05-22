@@ -101,22 +101,20 @@ def listar_insumos_por_marca(lista_insumos:list)->None:
     dic_marcas_nombres_precios = obtener_insumo_por_tipo(lista_insumos, marcas, "marca")
     mostrar_marca_nombre_precio(dic_marcas_nombres_precios)
 
-def buscar_coincidencias(lista:list, key:str, elemento_buscar:str):
-    coincidencias = []
-
-    for item in lista:
-        if elemento_buscar in item[key]: 
-            coincidencias.append(item)
+def buscar_coincidencias_caracteristicas(lista_insumos:list, elemento_buscar:str):
+    insumo_con_esas_caracteristicas = []
     
-    return coincidencias
+    for insumo in lista_insumos:
+        if elemento_buscar in insumo["caracteristicas"]:
+            insumo_con_esas_caracteristicas.append(insumo)
+    
+    return insumo_con_esas_caracteristicas
 
 def buscar_insumo_por_característica(lista_insumos:list, caracteristica_buscada:str):
-    insumos_caracteristicas = buscar_coincidencias(lista_insumos, "caracteristicas", caracteristica_buscada)
-    if len(insumos_caracteristicas) > 0:
-        mostrar_insumos(insumos_caracteristicas)
-    else:
-        print("No hay insumos con esas caracteristicas")
-
+    insumos_con_esa_caracteristica = buscar_coincidencias_caracteristicas(lista_insumos,caracteristica_buscada)  
+    mostrar_insumos(insumos_con_esa_caracteristica, formato=False) 
+    
+    
 def dejar_una_caracteristica(lista_insumos:list)->None:
     for insumo in lista_insumos:
         insumo["caracteristicas"] = insumo["caracteristicas"].split("~")

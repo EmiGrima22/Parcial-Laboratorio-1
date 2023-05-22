@@ -1,3 +1,5 @@
+import json
+
 def conseguir_lista_insumos_limpia(lista_insumos:list):
 
     if len(lista_insumos) > 0:
@@ -30,3 +32,15 @@ def leer_archivo(nombre_archivo:str)->list:
 def escribir_archivo(nombre_archivo:str, datos:list):
     with open(nombre_archivo,"w") as archivo:
         archivo.writelines("\n".join(datos))
+
+def escribir_json(nombre_archivo:str, lista_filtrada:list):
+    with open(nombre_archivo, "w", encoding='utf-8') as archivo:
+        json.dump(lista_filtrada, archivo, indent=4, separators=(", ", " : "), ensure_ascii=False)
+
+def leer_json(nombre_archivo:str):
+    with open(nombre_archivo, "r") as archivo:
+        datos = json.load(archivo)
+    
+    return datos
+    
+    

@@ -1,5 +1,4 @@
 import os
-import json
 from validaciones import *
 from funciones_insumos import *
 
@@ -45,9 +44,10 @@ def insumos_app() -> None:
             case 3:
                 listar_insumos_por_marca(lista_insumos)
             case 4:
-                caracteristica_buscar = input("Ingrese caracteristica a buscar\n").capitalize()
-                if not validar_string_vacio(caracteristica_buscar) and len(caracteristica_buscar) > 0:
-                    buscar_insumo_por_característica(lista_insumos, caracteristica_buscar)
+                caracteristica_buscada = input("Ingrese caracteristica a buscar\n").capitalize()
+
+                if not validar_string_vacio(caracteristica_buscada) and len(caracteristica_buscada) > 0:
+                    buscar_insumo_por_característica(lista_insumos, caracteristica_buscada)
                 else:
                     print("No debe ser una cadena vacia")
             case 5:
@@ -55,21 +55,11 @@ def insumos_app() -> None:
             case 6:
                 realizar_compras(lista_insumos)  
             case 7:
-                
-                productos_filtrados = []
-                
                 insumos_filtrados_alimento = list(filter(lambda ins: "Alimento" in ins["nombre"],lista_insumos))
-
-                # for insumo in lista_insumos:
-                #     if "Alimento" in insumo["nombre"]:
-                #         productos_filtrados.append(insumo)
-
-                with open("insumos_alimento.json", "w", encoding='utf-8') as archivo:
-                    json.dump(insumos_filtrados_alimento, archivo, indent=4, separators=(", ", " : "), ensure_ascii=False)
-
+                escribir_json("insumos_alimento.json", insumos_filtrados_alimento)
             case 8:
-                with open("insumos_alimento.json", "w") as archivo:
-                    pass
+                datos = leer_json("insumos_alimento.json")
+                mostrar_insumos(datos, formato= False)
             case 9:
                 pass
             case 10:
