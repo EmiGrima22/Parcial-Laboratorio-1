@@ -28,7 +28,7 @@ def insumos_app() -> None:
     
     flag_cargar_csv = False
     flag_json = False
-    
+
     while True:
         os.system("cls")
         while True:
@@ -69,8 +69,9 @@ def insumos_app() -> None:
                     imprimir_dato("Primero debe leer el archivo csv")
             case 5:
                 if flag_cargar_csv:
-                    lista_insumos_copia = copiar_lista(lista_insumos)
-                    listar_insumos_ordenados(lista_insumos_copia)
+                    lista_nueva_insumos_ordenar = []
+                    copiar_lista(lista_insumos, lista_nueva_insumos_ordenar)
+                    listar_insumos_ordenados(lista_nueva_insumos_ordenar)
                 else:
                     imprimir_dato("Primero debe leer el archivo csv")
             case 6:

@@ -93,7 +93,7 @@ def filtrar_categoria(lista:list, key:str)-> list | int:
     """Filtra los elementos de un diccionario por clave(key)
 
     Args:
-        lista (list): Lista de diccionarios a evaluar\n
+        lista (list): Lista de diccionarios de insumos\n
         key (str): Clave del diccionario a filtrar
 
     Returns:
@@ -161,52 +161,111 @@ def listar_cantidad_por_marca(lista_insumos:list):
 
 
 def listar_marca_nombre_precio(lista_insumos:list)->None:
+    """Filtra marca - nombre - precio de los insumos y los muestra
 
+    Args:
+        lista_insumos (list): Lista de diccionarios de insumos
+    """
     marcas_nombres_precios = list(map(lambda ins: [ins["marca"], ins["nombre"], ins["precio"]], lista_insumos))
     imprimir_dato("\n MARCA                        NOMBRE                          PRECIO\n")
     for item in marcas_nombres_precios:
         print(f"{item[0]:25s} {item[1]:35s} {item[2]}")
     
+def separar_caracteristicas(lista_insumos:list):
+    """Separa un string de caracteristicas en caracteristicas individuales
 
-def buscar_coincidencias_caracteristicas(lista_insumos:list, elemento_buscar:str):
-    insumo_con_esas_caracteristicas = []
-    
+    Args:
+        lista_insumos (list): Lista de diccionarios de insumos
+    """
     for insumo in lista_insumos:
         insumo["caracteristicas"] = insumo["caracteristicas"].split("~")
-        
-    for insumo in lista_insumos:
-        if elemento_buscar in insumo["caracteristicas"]:
-            insumo_con_esas_caracteristicas.append(insumo)
-    
+
+def unir_caracteristicas(lista_insumos:list):
+    """Junta las caracteristicas separadas, en un string 
+
+    Args:
+        lista_insumos (list): Lista de diccionarios de insumos
+    """
     for insumo in lista_insumos:
         insumo["caracteristicas"] = "~".join(insumo["caracteristicas"])
+
+
+def buscar_coincidencias_caracteristicas(lista_insumos:list, caracteristica_buscar:str) -> list:
+    """Busca coincidencias de caracteristicas y las guarda en una lista auxiliar
+
+    Args:
+        lista_insumos (list): Lista de diccionarios de insumos\n
+        elemento_buscar (str): La caracteristica a buscar
+
+    Returns:
+        list: La lista de insumos con las caracteristicas solicitadas
+    """
+    insumo_con_esas_caracteristicas = []
+    
+    separar_caracteristicas(lista_insumos)
+    
+    for insumo in lista_insumos:
+        if caracteristica_buscar in insumo["caracteristicas"]:
+            insumo_con_esas_caracteristicas.append(insumo)
+    
+    unir_caracteristicas(lista_insumos)
     
     return insumo_con_esas_caracteristicas
 
 def buscar_insumo_por_característica(lista_insumos:list, caracteristica_buscada:str):
+    """Busca coincidencias de caracteristicas y muestra los insumos encontrados con esas caracteristicas, de no encontrar ninguno lo informa en pantalla
+
+    Args:
+        lista_insumos (list): Lista de diccionarios de insumos\n
+        elemento_buscar (str): La caracteristica a buscar
+    """
+
     insumos_con_esa_caracteristica = buscar_coincidencias_caracteristicas(lista_insumos,caracteristica_buscada)
-      
     if len(insumos_con_esa_caracteristica) > 0:
         mostrar_insumos(insumos_con_esa_caracteristica, formato=False)
     else:
-        print("No se encontro ese producto") 
+        imprimir_dato("No existe esa caracteristica")
     
+def mostrar_insumos_con_una_caracteristica(lista_insumos:list):
+    """Imprime en pantalla la lista de insumos con la primer caracteristica solamente
+
+    Args:
+        lista_insumos (list): La lista de diccionarios de insumos
+    """
+
+    separar_caracteristicas(lista_insumos)
     
-def dejar_una_caracteristica(lista_insumos:list)->None:
+    imprimir_dato("\n  ID           NOMBRE                        MARCA                    PRECIO                     CARACTERISTICAS\n")
+
     for insumo in lista_insumos:
-        insumo["caracteristicas"] = insumo["caracteristicas"].split("~")
-        insumo["caracteristicas"] = insumo["caracteristicas"][0]
+        imprimir_dato(f"  {insumo['id']:5s} {insumo['nombre']:35s} {insumo['marca']:25s} {insumo['precio']:10} {insumo['caracteristicas'][0]}")
 
-def mostrar_insumos_con_una_caracteristica(lista_insumos):
-    dejar_una_caracteristica(lista_insumos)
-    mostrar_insumos(lista_insumos,formato= False)
+    unir_caracteristicas(lista_insumos)
+    
 
-def reemplazar_caracter(lista:list,key:str, caracter_quitar:str, caracter_nuevo:str):
+def reemplazar_caracter(lista:list,key:str, caracter_reemplazar:str, caracter_nuevo:str):
+    """Reemplaza un caracter por otro en una cadena ubicada en un campo de diccionario
+
+    Args:
+        lista (list): Lista de diccionarios de insumos\n
+        key (str): Clave del diccionario a buscar el caracter a reemplazar\n
+        caracter_quitar (str): Caracter a reemplazar en la cadena\n
+        caracter_nuevo (str): Caracter nuevo en la cadena
+    """
     for item in lista:
-        item[key] = item[key].replace(caracter_quitar,caracter_nuevo)
+        item[key] = item[key].replace(caracter_reemplazar,caracter_nuevo)
 
 
-def convertir_str_flotante(lista:list, key:str):
+def convertir_str_flotante(lista:list, key:str) -> bool:
+    """Convierte un numero decimal que esta en string en decimal
+
+    Args:
+        lista (list): Lista de diccionarios de insumos\n
+        key (str): Clave del diccionario donde se encuentra el string del numero decimal 
+
+    Returns:
+        bool: True si pudo parsear, caso contrario False
+    """
 
     for item in lista:
         try:
@@ -217,17 +276,31 @@ def convertir_str_flotante(lista:list, key:str):
     
     return flag
 
-def copiar_lista(lista_original:list)->list:
+def copiar_lista(lista_original:list, lista_nueva:list)->int:
+    """Copia los elementos de una lista en una lista nueva
+
+    Args:
+        lista_original (list): Lista original de elementos\n
+        lista_nueva (list): Lista donde se copiaran los elementos de la lista original
+
+    Returns:
+        int: -1 en caso de pasarle una lista vacia
+    """
 
     if len(lista_original) > 0:
-        lista_aux = []
         for item in lista_original:
-            lista_aux.append(item)
-        return lista_aux
+            lista_nueva.append(item)
     else:
         return -1
     
 def ordenar_por_doble_criterio(lista:list, key_principal:str, key_secundaria:str)->None:
+    """Ordena una lista de diccionarios por doble criterio
+
+    Args:
+        lista (list): Lista de diccionarios a ordenar\n
+        key_principal (str): Clave del primer criterio a ordenar\n
+        key_secundaria (str): Clave del segundo criterio a ordenar
+    """
     tam = len(lista)
 
     for i in range(tam-1):
@@ -239,14 +312,25 @@ def ordenar_por_doble_criterio(lista:list, key_principal:str, key_secundaria:str
     
     
 def convertir_en_pesos(lista:list):
+    """Agrega el signo pesos al precio del insumo
+
+    Args:
+        lista (list): Lista de diccionarios de insumos
+    """
     for item in lista:
         item["precio"] = f"${item['precio']}"
     
 def listar_insumos_ordenados(lista_copia):
+    """_summary_
+
+    Args:
+        lista_copia (_type_): _description_
+    """
     reemplazar_caracter(lista_copia, "precio", "$", "")
     if convertir_str_flotante(lista_copia,"precio"):
         ordenar_por_doble_criterio(lista_copia, "marca", "precio")
         convertir_en_pesos(lista_copia)
+        imprimir_dato(" LISTA ORDENADA POR MARCA ASCENDENTE Y MISMA MARCA PRECIO DESCENDENTE")
         mostrar_insumos_con_una_caracteristica(lista_copia)
 
 def buscar_por_key(lista:list, buscado:str):
