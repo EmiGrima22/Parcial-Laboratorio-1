@@ -26,6 +26,8 @@ def insumos_menu_principal()->int:
     
 def insumos_app() -> None:
     
+    flag_cargar_csv = False
+    flag_json = False
     
     while True:
         os.system("cls")
@@ -34,34 +36,65 @@ def insumos_app() -> None:
             if opcion >= 1 and opcion <= 10:
                 break
             else:
-                print("Opcion incorrecta")
+                imprimir_dato("Opcion incorrecta")
             
         match opcion:
             case 1:
-                lista_insumos = cargar_datos_desde_archivo("insumos.csv") 
-            case 2:
-                listar_cantidad_por_marca(lista_insumos)
-            case 3:
-                listar_insumos_por_marca(lista_insumos)
-            case 4:
-                caracteristica_buscada = input("Ingrese caracteristica a buscar\n").capitalize()
-
-                if not validar_string_vacio(caracteristica_buscada) and len(caracteristica_buscada) > 0:
-                    buscar_insumo_por_característica(lista_insumos, caracteristica_buscada)
+                if not flag_cargar_csv:
+                    if cargar_datos_desde_archivo("insumos.csv") != -1:
+                        lista_insumos = cargar_datos_desde_archivo("insumos.csv")
+                        flag_cargar_csv = True
+                        imprimir_dato("Insumos csv leido correctamente")
                 else:
-                    print("No debe ser una cadena vacia")
+                    imprimir_dato("El archivo csv ya fue cargado") 
+            case 2:
+                if flag_cargar_csv:
+                    listar_cantidad_por_marca(lista_insumos)
+                else:
+                    imprimir_dato("Primero debe leer el archivo csv")
+            case 3:
+                if flag_cargar_csv:
+                    listar_marca_nombre_precio(lista_insumos)
+                else:
+                    imprimir_dato("Primero debe leer el archivo csv")
+            case 4:
+                if flag_cargar_csv:
+                    caracteristica_buscada = input("Ingrese caracteristica a buscar\n").capitalize()
+
+                    if not validar_string_vacio(caracteristica_buscada) and len(caracteristica_buscada) > 0:
+                        buscar_insumo_por_característica(lista_insumos, caracteristica_buscada)
+                    else:
+                        imprimir_dato("No debe ser una cadena vacia")
+                else:
+                    imprimir_dato("Primero debe leer el archivo csv")
             case 5:
-                listar_insumos_ordenados(lista_insumos)
+                if flag_cargar_csv:
+                    lista_insumos_copia = copiar_lista(lista_insumos)
+                    listar_insumos_ordenados(lista_insumos_copia)
+                else:
+                    imprimir_dato("Primero debe leer el archivo csv")
             case 6:
-                realizar_compras(lista_insumos)  
+                if flag_cargar_csv:
+                    realizar_compras(lista_insumos)  
+                else:
+                    imprimir_dato("Primero debe leer el archivo csv")
             case 7:
-                insumos_filtrados_alimento = list(filter(lambda ins: "Alimento" in ins["nombre"],lista_insumos))
-                escribir_json("insumos_alimento.json", insumos_filtrados_alimento)
+                if flag_cargar_csv:
+                    nombre_archivo = "insumos_alimentos.json"
+                    filtrar_escribir_json(lista_insumos, nombre_archivo, "Alimento")
+                    flag_json = True
+                else:
+                    imprimir_dato("Primero debe leer el archivo csv")
             case 8:
-                datos = leer_json("insumos_alimento.json")
-                mostrar_insumos(datos, formato= False)
+                if flag_json:
+                    leer_mostrar_json(nombre_archivo)
+                else:
+                    imprimir_dato("No existe archivo json para leer")
             case 9:
-                pass
+                if flag_cargar_csv:
+                    calcular_aplicar_guardar_archivo(lista_insumos)
+                else:
+                    imprimir_dato("Primero debe leer el archivo csv")
             case 10:
                 while True:
                     confirmacion = input("¿Seguro desea salir? s/n\n").lower()

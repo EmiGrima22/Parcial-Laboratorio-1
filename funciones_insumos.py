@@ -2,37 +2,68 @@ from funciones_archivos import *
 from functools import reduce
 
 def fabricar_lista_diccionarios_insumos(lista:list)->list:
+    """Fabrica una lista de diccionarios a partir de una lista 
+
+    Args:
+        lista (list): Lista de elementos a transformar
+
+    Returns:
+        list: Lista con los diccionarios de cada elemento
+    """
     
     if len(lista) > 0:
         
-        lista_diccionarios_insumos = []
+        lista_dict = []
         
         claves = lista.pop(0)
         
-        for elemento in lista:
-            insumo = {}
-            insumo[claves[0].lower()] = elemento[0]
-            insumo[claves[1].lower()] = elemento[1]
-            insumo[claves[2].lower()] = elemento[2]
-            insumo[claves[3].lower()] = elemento[3]
-            insumo[claves[4].lower()] = elemento[4]
-            lista_diccionarios_insumos.append(insumo)
+        for valor in lista:
+            item = {}
+            item[claves[0].lower()] = valor[0]
+            item[claves[1].lower()] = valor[1]
+            item[claves[2].lower()] = valor[2]
+            item[claves[3].lower()] = valor[3]
+            item[claves[4].lower()] = valor[4]
+            lista_dict.append(item)
 
-        return lista_diccionarios_insumos
+        return lista_dict
     
     else:
         return -1
 
+def imprimir_dato(dato:str)->None:
+    """Imprime una cadena
+
+    Args:
+        dato (str): Cadena a imprimir
+    """
+    print(dato)
+
 def encabezado_insumos()->None:
-    print("\n  ID           NOMBRE                        MARCA                    PRECIO                     CARACTERISTICAS\n")
+    """Imprime el encabezado de insumos
+    """
+    
+    imprimir_dato("\n  ID           NOMBRE                        MARCA                    PRECIO                     CARACTERISTICAS\n")
 
 def mostrar_insumo(insumo:dict, formato = True):
-    if formato:
-        print(f"\n ID: {insumo['id']}\n NOMBRE: {insumo['nombre']}\n MARCA: {insumo['marca']}\n PRECIO: {insumo['precio']}\n CARACTERISTICAS: {insumo['caracteristicas']}\n")
-    else:
-        print(f"  {insumo['id']:5s} {insumo['nombre']:35s} {insumo['marca']:25s} {insumo['precio']:10} {insumo['caracteristicas']}")
+    """Imprime un insumo en formato lista o diccionario
 
-def mostrar_insumos(lista:list, formato = True)->None:
+    Args:
+        insumo (dict): El diccionario del insumo\n
+        formato (bool, optional): En True en formato diccionario, False formato lista. Defaults to True.
+    """
+    if formato:
+        imprimir_dato(f"\n ID: {insumo['id']}\n NOMBRE: {insumo['nombre']}\n MARCA: {insumo['marca']}\n PRECIO: {insumo['precio']}\n CARACTERISTICAS: {insumo['caracteristicas']}\n")
+    else:
+        imprimir_dato(f"  {insumo['id']:5s} {insumo['nombre']:35s} {insumo['marca']:25s} {insumo['precio']:10} {insumo['caracteristicas']}")
+
+def mostrar_insumos(lista:list, formato = True):
+    """Imprime los insumos en formato lista con un encabezado o en formato diccionario
+
+    Args:
+        lista (list): Lista de diccionarios de los insumos\n
+        formato (bool, optional): En True en formato diccionario, False formato lista. Defaults to True.
+    """
     if not formato:
         encabezado_insumos()  
 
@@ -40,11 +71,34 @@ def mostrar_insumos(lista:list, formato = True)->None:
         mostrar_insumo(insumo,formato) 
 
 def cargar_datos_desde_archivo(nombre_archivo:str)-> list:
-    lista_insumos = leer_archivo(nombre_archivo)
-    insumos = fabricar_lista_diccionarios_insumos(lista_insumos)
-    return insumos  
+    """Lee un archivo CSV, carga los datos en una lista, fabrica una lista de diccionarios.
 
-def filtrar_categoria(lista:list, key:str)->list:
+    Args:
+        nombre_archivo (str): Nombre del archivo CSV fuente
+
+    Returns:
+        list: Lista de diccionarios o -1 si sale mal
+    """
+    if leer_archivo_csv(nombre_archivo) != -1:
+        lista_insumos = leer_archivo_csv(nombre_archivo)
+        insumos = fabricar_lista_diccionarios_insumos(lista_insumos)
+        if insumos != -1:
+            return insumos
+        else:
+            return -1
+    else:
+        return -1  
+
+def filtrar_categoria(lista:list, key:str)-> list | int:
+    """Filtra los elementos de un diccionario por clave(key)
+
+    Args:
+        lista (list): Lista de diccionarios a evaluar\n
+        key (str): Clave del diccionario a filtrar
+
+    Returns:
+        list | int: Si sale bien la lista filtrada, de lo contrario -1
+    """
 
     if len(lista) > 0:
         lista_filtrada = list(map(lambda insumo: insumo[key],lista))
@@ -52,67 +106,90 @@ def filtrar_categoria(lista:list, key:str)->list:
     else:
         return -1
     
-def contar_insumos_por_categoria(insumos:list)->dict:
+def contar_item_por_categoria(lista_filtrada:list)->dict:
+    """Cuenta los items iguales en una lista y los agrega a un diccionario que tiene como clave el item y como valor la cantidad
+
+    Args:
+        lista_filtrada (list): Lista filtrada a contar los items
+
+    Returns:
+        dict: Si sale todo bien un diccionario con los items contados, de lo contrario -1
+    """
     
-    if len(insumos) > 0:
+    if len(lista_filtrada) > 0:
+        
         categoria_cantidad = {}
-        for item in insumos:
-            if item in categoria_cantidad:
-                categoria_cantidad[item] += 1
+        
+        for insumo in lista_filtrada:
+            if insumo in categoria_cantidad:
+                categoria_cantidad[insumo] += 1
             else:
-                categoria_cantidad[item] = 1
+                categoria_cantidad[insumo] = 1
         
         return categoria_cantidad
     else:
         return -1
 
-def mostrar_cantidad_por_categoria(cantidad_categoria:dict)->None:
+def mostrar_cantidad_por_categoria(cantidad_categoria:dict):
+    """Imprime pares clave - valor de un diccionario
+
+    Args:
+        cantidad_categoria (dict): El diccionario a imprimir
+    """
     for categoria, cantidad in cantidad_categoria.items():
-        print(f"{categoria:25}  |  {cantidad}")
+        print(f" {categoria:22}     |      {cantidad}")
 
-def listar_cantidad_por_marca(lista_insumos:list)->None:
-    marcas_insumos = filtrar_categoria(lista_insumos,"marca")
-    cantidad_de_marcas = contar_insumos_por_categoria(marcas_insumos)
-    mostrar_cantidad_por_categoria(cantidad_de_marcas)
+def listar_cantidad_por_marca(lista_insumos:list):
+    """Filtra las marcas, obtiene la cantidad de marcas iguales y muestra en pantalla marca - cantidad
 
-def obtener_insumo_por_tipo(lista_insumos:list, lista_sin_repetidos:list, key_evaluar:str)-> dict:
+    Args:
+        lista_insumos (list): Lista de insumos a trabajar
+    """
+    if len(lista_insumos) > 0:
+        marcas_insumos = filtrar_categoria(lista_insumos,"marca")
+        if not marcas_insumos == -1:
+            cantidad_de_marcas = contar_item_por_categoria(marcas_insumos)
+            if not cantidad_de_marcas == -1:
+                imprimir_dato("\n  MARCA                     |   CANTIDAD\n")  
+                mostrar_cantidad_por_categoria(cantidad_de_marcas)
+            else:
+                return -1
+        else:
+            return -1
+    else:
+        return -1
+
+
+def listar_marca_nombre_precio(lista_insumos:list)->None:
+
+    marcas_nombres_precios = list(map(lambda ins: [ins["marca"], ins["nombre"], ins["precio"]], lista_insumos))
+    imprimir_dato("\n MARCA                        NOMBRE                          PRECIO\n")
+    for item in marcas_nombres_precios:
+        print(f"{item[0]:25s} {item[1]:35s} {item[2]}")
     
-    dic_tipo_nombres_precios = {}
-
-    for item in lista_sin_repetidos:
-        for insumo in lista_insumos:
-            if insumo[key_evaluar] == item:
-                if item not in dic_tipo_nombres_precios:
-                    dic_tipo_nombres_precios[item] = []
-                     
-                dic_tipo_nombres_precios[item].append(f'{insumo["nombre"]:35s} {insumo["precio"]}')
-                
-    return dic_tipo_nombres_precios
-
-def mostrar_marca_nombre_precio(dic_tipos:dict):
-    print("\n MARCA                        NOMBRE                          PRECIO\n")
-    for clave,valores in dic_tipos.items():
-        for valor in valores:
-            print(f"{clave:25s} {valor}")
-
-def listar_insumos_por_marca(lista_insumos:list)->None:
-
-    marcas = quitar_repetidos(filtrar_categoria(lista_insumos,"marca"))
-    dic_marcas_nombres_precios = obtener_insumo_por_tipo(lista_insumos, marcas, "marca")
-    mostrar_marca_nombre_precio(dic_marcas_nombres_precios)
 
 def buscar_coincidencias_caracteristicas(lista_insumos:list, elemento_buscar:str):
     insumo_con_esas_caracteristicas = []
     
     for insumo in lista_insumos:
+        insumo["caracteristicas"] = insumo["caracteristicas"].split("~")
+        
+    for insumo in lista_insumos:
         if elemento_buscar in insumo["caracteristicas"]:
             insumo_con_esas_caracteristicas.append(insumo)
+    
+    for insumo in lista_insumos:
+        insumo["caracteristicas"] = "~".join(insumo["caracteristicas"])
     
     return insumo_con_esas_caracteristicas
 
 def buscar_insumo_por_característica(lista_insumos:list, caracteristica_buscada:str):
-    insumos_con_esa_caracteristica = buscar_coincidencias_caracteristicas(lista_insumos,caracteristica_buscada)  
-    mostrar_insumos(insumos_con_esa_caracteristica, formato=False) 
+    insumos_con_esa_caracteristica = buscar_coincidencias_caracteristicas(lista_insumos,caracteristica_buscada)
+      
+    if len(insumos_con_esa_caracteristica) > 0:
+        mostrar_insumos(insumos_con_esa_caracteristica, formato=False)
+    else:
+        print("No se encontro ese producto") 
     
     
 def dejar_una_caracteristica(lista_insumos:list)->None:
@@ -122,7 +199,7 @@ def dejar_una_caracteristica(lista_insumos:list)->None:
 
 def mostrar_insumos_con_una_caracteristica(lista_insumos):
     dejar_una_caracteristica(lista_insumos)
-    mostrar_insumos(lista_insumos)
+    mostrar_insumos(lista_insumos,formato= False)
 
 def reemplazar_caracter(lista:list,key:str, caracter_quitar:str, caracter_nuevo:str):
     for item in lista:
@@ -140,6 +217,16 @@ def convertir_str_flotante(lista:list, key:str):
     
     return flag
 
+def copiar_lista(lista_original:list)->list:
+
+    if len(lista_original) > 0:
+        lista_aux = []
+        for item in lista_original:
+            lista_aux.append(item)
+        return lista_aux
+    else:
+        return -1
+    
 def ordenar_por_doble_criterio(lista:list, key_principal:str, key_secundaria:str)->None:
     tam = len(lista)
 
@@ -150,26 +237,17 @@ def ordenar_por_doble_criterio(lista:list, key_principal:str, key_secundaria:str
                 lista[i] = lista[j]
                 lista[j] = aux
     
-def quitar_repetidos(lista:list)->list:
-
-    lista_sin_repetidos = []
-
-    for item in lista:
-        if item not in lista_sin_repetidos:
-            lista_sin_repetidos.append(item)
-
-    return lista
- 
+    
 def convertir_en_pesos(lista:list):
     for item in lista:
         item["precio"] = f"${item['precio']}"
     
-def listar_insumos_ordenados(lista_insumos):
-    reemplazar_caracter(lista_insumos, "precio", "$", "")
-    if convertir_str_flotante(lista_insumos,"precio"):
-        ordenar_por_doble_criterio(lista_insumos, "marca", "precio")
-        convertir_en_pesos(lista_insumos)
-        mostrar_insumos(lista_insumos, formato=False)
+def listar_insumos_ordenados(lista_copia):
+    reemplazar_caracter(lista_copia, "precio", "$", "")
+    if convertir_str_flotante(lista_copia,"precio"):
+        ordenar_por_doble_criterio(lista_copia, "marca", "precio")
+        convertir_en_pesos(lista_copia)
+        mostrar_insumos_con_una_caracteristica(lista_copia)
 
 def buscar_por_key(lista:list, buscado:str):
 
@@ -185,10 +263,10 @@ def calcular_subtotal(operando_a:int | float, operando_b:int | float)-> int | fl
     subtotal  =  operando_a * operando_b
     return subtotal
 
-def buscar_insumos_por_key(lista_insumos, marca_buscar, key):
+def buscar_insumos_por_key(lista_insumos, elemento_buscar, key):
     
     if len(lista_insumos) > 0:
-        lista_filtrada = list(filter(lambda ins: ins[key] == marca_buscar, lista_insumos))
+        lista_filtrada = list(filter(lambda ins: ins[key] == elemento_buscar, lista_insumos))
         return lista_filtrada
     else:
         return -1
@@ -215,13 +293,14 @@ def mostrar_dato(lista:list,encabezado:str)->None:
         print(f"    {dato}")
 
 def quitar_marcas_repetidas_mostrarlos(lista_insumos:list)->list:
-    marcas = quitar_repetidos((filtrar_categoria(lista_insumos, "marca")))
-    mostrar_dato(marcas,"MARCAS DISPONIBLES")
+    marcas = filtrar_categoria(lista_insumos, "marca")
+    if marcas != -1:
+        marcas = set(marcas)
+        mostrar_dato(marcas,"MARCAS DISPONIBLES")
+        return marcas
+    else:
+        return -1
 
-    return marcas
-
-def imprimir_dato(dato:str)->None:
-    print(dato)
 
 def realizar_compras(lista_insumos):
     total_compra = []
@@ -279,7 +358,7 @@ def realizar_compras(lista_insumos):
                 break
 
         if continuar == "n":
-                break
+            break
         
     total_final = reduce(lambda act, ant: ant + act, total_compra)
 
@@ -288,3 +367,44 @@ def realizar_compras(lista_insumos):
     imprimir_dato(f"El total de la compra fue {total_final:.2f}")
     
     escribir_archivo("Factura_compra.txt",registro_compras)
+    
+def filtrar_escribir_json(lista_insumos:list, nombre_archivo:str, nombre_filtrar:str):
+    
+    insumos_filtrados_alimento = list(filter(lambda ins: nombre_filtrar in ins["nombre"],lista_insumos))
+    escribir_json(nombre_archivo, insumos_filtrados_alimento)
+
+def leer_mostrar_json(nombre_archivo):
+    datos = leer_json(nombre_archivo)
+    mostrar_insumos(datos, formato= False)
+
+def calcular_aumento(lista_insumos:list, key, aumento):
+    
+    aumentos = list(map(lambda ins: round((ins[key] * aumento) + ins[key], 2),lista_insumos))
+    return aumentos
+
+def reemplazar_valores(lista_original:list, lista_reemplazar:list):
+    for i in range(len(lista_original)):
+        lista_original[i]["precio"] = lista_reemplazar[i]
+
+def escribir_csv(lista_insumos:list):
+    
+    with open("insumos_2.csv", "w", encoding='utf-8') as file:
+                    
+        encabezado = lista_insumos[0].keys()
+        
+        linea_columna = ",".join(encabezado)
+        file.write(linea_columna.upper() + "\n")
+
+        for insumo in lista_insumos:
+            linea = insumo.values()
+            linea_columna_valores = ','.join(linea)
+            file.write(linea_columna_valores + '\n')
+
+def calcular_aplicar_guardar_archivo(lista_insumos:list):
+    
+    reemplazar_caracter(lista_insumos,"precio","$","")
+    convertir_str_flotante(lista_insumos, "precio")
+    aumentos = calcular_aumento(lista_insumos, "precio", 0.084)
+    reemplazar_valores(lista_insumos, aumentos)
+    convertir_en_pesos(lista_insumos)
+    escribir_csv(lista_insumos)
