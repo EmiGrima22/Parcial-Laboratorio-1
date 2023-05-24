@@ -1,3 +1,0 @@
-Cantidad: 1 - Producto: Alimento para peces                 - Subtotal: $5.99
-Cantidad: 1 - Producto: Transportadora para gatos           - Subtotal: $32.99
-                                                            - Total:    $38.98

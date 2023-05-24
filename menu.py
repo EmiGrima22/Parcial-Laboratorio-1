@@ -4,17 +4,17 @@ from funciones_insumos import *
 
 
 def imprimir_menu_insumos()->None:
-    """Imprime el menu de opciones
+    """Imprime el menu de opciones con encabezado
     """
     print("####             ADMINISTRACION DE INSUMOS             ####\n")
     print("-----------------------------------------------------------\n")
     print(" 1 --> Cargar datos desde archivo\n 2 --> Listar cantidad por marca\n 3 --> Listar insumos por marca\n 4 --> Buscar insumo por característica\n 5 --> Listar insumos ordenados\n 6 --> Realizar compras\n 7 --> Guardar en formato JSON\n 8 --> Leer desde formato JSON\n 9 --> Actualizar precios\n10 --> Salir del programa\n\n")
     
 def insumos_menu_principal()->int:
-    """Muestra el menu, pide una opcion y la castea a entero
+    """Muestra el menu, pide una opcion y la parsea a entero
 
     Returns:
-        int: La opcion casteada a int(entero) o -1 si algo sale mal
+        int: La opcion parseada a int(entero) o -1 si sale mal
     """
     imprimir_menu_insumos()
     opcion = input("Ingrese una opcion\n")
@@ -25,6 +25,8 @@ def insumos_menu_principal()->int:
         return -1
     
 def insumos_app() -> None:
+    """Muestra el menu principal con toda la funcionalidad del programa
+    """
     
     flag_cargar_csv = False
     flag_json = False
@@ -84,6 +86,7 @@ def insumos_app() -> None:
                     nombre_archivo = "insumos_alimentos.json"
                     filtrar_escribir_json(lista_insumos, nombre_archivo, "Alimento")
                     flag_json = True
+                    imprimir_dato("JSON creado correctamente")
                 else:
                     imprimir_dato("Primero debe leer el archivo csv")
             case 8:
@@ -93,7 +96,7 @@ def insumos_app() -> None:
                     imprimir_dato("No existe archivo json para leer")
             case 9:
                 if flag_cargar_csv:
-                    calcular_aplicar_guardar_archivo(lista_insumos)
+                    calcular_aumento_aplicar_guardar_archivo(lista_insumos, "insumos.csv")
                 else:
                     imprimir_dato("Primero debe leer el archivo csv")
             case 10:

@@ -7,7 +7,7 @@ def conseguir_lista_insumos_limpia(lista_insumos:list)-> int | list:
         lista_insumos (list): Lista a trabajar
 
     Returns:
-        int | list: Retorna la lista si salio todo bien o -1 en caso contrario
+        int | list: Retorna la lista si salio todo bien o -1 en caso de lista vacia
     """
 
     if len(lista_insumos) > 0:
@@ -39,14 +39,14 @@ def leer_archivo_csv(nombre_archivo:str)->list | int:
             linea = linea.split(",")
             lista.append(linea)
         
-    if  len(lista) > 0 and not conseguir_lista_insumos_limpia(lista) == -1:
+    if len(lista) > 0 and not conseguir_lista_insumos_limpia(lista) == -1:
         lista = conseguir_lista_insumos_limpia(lista)
         return lista
     else:
         return -1
 
 def escribir_archivo(nombre_archivo:str, datos:list):
-    """Abre un archivo en modo escritura y lo escribe con datos de una lista
+    """Escribe un archivo con un '\\n' al final de cada linea
 
     Args:
         nombre_archivo (str): El nombre y la extension del archivo\n
@@ -56,7 +56,7 @@ def escribir_archivo(nombre_archivo:str, datos:list):
         archivo.writelines("\n".join(datos))
 
 def escribir_json(nombre_archivo:str, lista_filtrada:list):
-    """Abre un archivo en modo escritura, si no existe lo crea. Y lo escribe con datos de una lista
+    """Abre un archivo en modo escritura, si no existe lo crea. Y lo escribe con los datos de una lista
 
     Args:
         nombre_archivo (str): Nombre y extension del archivo\n
@@ -69,10 +69,10 @@ def leer_json(nombre_archivo:str)->dict:
     """Abre un archivo json en modo lectura y carga los datos
 
     Args:
-        nombre_archivo (str): _description_
+        nombre_archivo (str): Nombre y extension del archivo
 
     Returns:
-        dict: Un diccionario con los datos del archivo cargado
+        dict: Un diccionario con los datos del archivo cargado 
     """
     
     with open(nombre_archivo, "r", encoding='utf-8') as archivo:
